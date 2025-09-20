@@ -26,7 +26,9 @@ exports.resetPasswordToken = async (req, res) => {
 		);
 		console.log("DETAILS", updatedDetails);
 
-		const url = `http://localhost:3000/update-password/${token}`;
+
+		// AFTER (Correct)
+		const url = `${process.env.REACT_APP_BASE_URL}/update-password/${token}`;
 
 		await mailSender(
 			email,
