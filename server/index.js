@@ -27,7 +27,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
 	cors({
-		origin:"https://studynotion-frontend-seven-delta.vercel.app/",
+		origin:"https://studynotion-frontend-seven-delta.vercel.app",
 		credentials:true,
 	})
 )
