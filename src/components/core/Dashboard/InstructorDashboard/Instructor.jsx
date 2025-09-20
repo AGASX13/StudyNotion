@@ -8,8 +8,8 @@ import { Link } from 'react-router-dom';
 export default function Instructor() {
     const { token } = useSelector((state) => state.auth)
     const { user } = useSelector((state) => state.profile)
-    const [loading, setLoading] = useState(false)
-    const [instructorData, setInstructorData] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [instructorData, setInstructorData] = useState([])
     const [courses, setCourses] = useState([])
   
     useEffect(() => {
@@ -18,13 +18,13 @@ export default function Instructor() {
         const instructorApiData = await getInstructorData(token)
         const result = await fetchInstructorCourses(token)
         console.log(instructorApiData)
-        if (instructorApiData.length) setInstructorData(instructorApiData)
+        setInstructorData(instructorApiData)
         if (result) {
           setCourses(result)
         }
         setLoading(false)
       })()
-    }, [])
+    }, [token])
   
     const totalAmount = instructorData?.reduce(
       (acc, curr) => acc + curr.totalAmountGenerated,
@@ -109,7 +109,7 @@ export default function Instructor() {
                       </p>
                       <div className="mt-1 flex items-center space-x-2">
                         <p className="text-xs font-medium text-richblack-300">
-                          {course.studentsEnroled.length} students
+                          {course.studentsEnrolled?.length || 0} students
                         </p>
                         <p className="text-xs font-medium text-richblack-300">
                           |

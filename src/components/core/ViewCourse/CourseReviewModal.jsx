@@ -103,10 +103,10 @@ export default function CourseReviewModal({ setReviewModal }) {
               >
                 Cancel
               </button>
-              <IconBtn text="Save" />
+              <IconBtn text="Save" type="submit"/>
             </div>
           </form>
-        </div>
+        </div> 
       </div>
     </div>
   )

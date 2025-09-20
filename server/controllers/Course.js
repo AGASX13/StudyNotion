@@ -231,6 +231,77 @@ exports.getAllCourses = async (req, res) => {
     })
   }
 }
+
+// controllers/Course.js
+
+// ... (keep all your existing functions like createCourse, editCourse, etc.)
+
+// Function to get all courses for a specific category
+exports.getCategoryPageDetails = async (req, res) => {
+  try {
+    const { categoryId } = req.body
+
+    // Get courses for the specified category
+    const selectedCategory = await Category.findById(categoryId)
+      .populate({
+        path: "courses",
+        match: { status: "Published" }, // Only get Published courses
+        populate: "ratingAndReviews",
+      })
+      .exec()
+
+    // Handle the case when the category is not found
+    if (!selectedCategory) {
+      console.log("Category not found.")
+      return res
+        .status(404)
+        .json({ success: false, message: "Category not found" })
+    }
+
+    // Handle the case when there are no courses in the category
+    if (selectedCategory.courses.length === 0) {
+      console.log("No courses found for this category.")
+      return res.status(404).json({
+        success: false,
+        message: "No courses found for this category.",
+      })
+    }
+
+    // Get courses from other categories
+    const categoriesExceptSelected = await Category.find({
+      _id: { $ne: categoryId }, // $ne means "not equal"
+    })
+    
+    // Get top-selling courses across all categories
+    const allCategories = await Category.find().populate({
+        path: "courses",
+        match: { status: "Published" },
+        populate: {
+            path: "instructor",
+        },
+      }).exec()
+    
+    const allCourses = allCategories.flatMap((category) => category.courses)
+    const mostSellingCourses = allCourses
+      .sort((a, b) => b.studentsEnrolled.length - a.studentsEnrolled.length)
+      .slice(0, 10)
+
+    res.status(200).json({
+      success: true,
+      data: {
+        selectedCategory,
+        differentCategory: categoriesExceptSelected, // For the "Frequently Bought" section
+        mostSellingCourses: mostSellingCourses, // For the "Top Courses" section
+      },
+    })
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    })
+  }
+}
 // Get One Single Course Details
 // exports.getCourseDetails = async (req, res) => {
 //   try {
@@ -453,7 +524,7 @@ exports.deleteCourse = async (req, res) => {
     }
 
     // Unenroll students from the course
-    const studentsEnrolled = course.studentsEnroled
+    const studentsEnrolled = course.studentsEnrolled
     for (const studentId of studentsEnrolled) {
       await User.findByIdAndUpdate(studentId, {
         $pull: { courses: courseId },

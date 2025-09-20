@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react"
+// 1. Import useCallback
+import { useEffect, useState, useCallback } from "react"
 import ProgressBar from "@ramonak/react-progress-bar"
-import { BiDotsVerticalRounded } from "react-icons/bi"
+// 2. Remove the unused import
+// import { BiDotsVerticalRounded } from "react-icons/bi"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
@@ -11,20 +13,23 @@ export default function EnrolledCourses() {
   const navigate = useNavigate()
 
   const [enrolledCourses, setEnrolledCourses] = useState(null)
-  const getEnrolledCourses = async () => {
+
+  // 3. Wrap the function in useCallback
+  const getEnrolledCourses = useCallback(async () => {
     try {
       const res = await getUserEnrolledCourses(token);
-
       setEnrolledCourses(res);
     } catch (error) {
       console.log("Could not fetch enrolled courses.")
     }
-  };
+  }, [token]); // 4. Add its own dependencies here
+
   useEffect(() => {
     getEnrolledCourses();
-  }, [])
+  }, [getEnrolledCourses]); // Now this is safe and will only run when the component mounts or the token changes
 
   return (
+    // ... your JSX remains exactly the same
     <>
       <div className="text-3xl text-richblack-50">Enrolled Courses</div>
       {!enrolledCourses ? (
@@ -34,7 +39,6 @@ export default function EnrolledCourses() {
       ) : !enrolledCourses.length ? (
         <p className="grid h-[10vh] w-full place-content-center text-richblack-5">
           You have not enrolled in any course yet.
-          {/* TODO: Modify this Empty State */}
         </p>
       ) : (
         <div className="my-8 text-richblack-5">

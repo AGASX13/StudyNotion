@@ -76,8 +76,9 @@ exports.signup = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     // Create the user
-    let approved = ""
-    approved === "Instructor" ? (approved = false) : (approved = true)
+    // Create the user
+    // Determine the approval status based on accountType
+    let approved = accountType === "Instructor" ? false : true;
 
     // Create the Additional Profile For User
     const profileDetails = await Profile.create({
@@ -95,7 +96,7 @@ exports.signup = async (req, res) => {
       accountType: accountType,
       approved: approved,
       additionalDetails: profileDetails._id,
-      image: "",
+      image: "https://api.dicebear.com/5.x/initials/svg?seed=${firstName} ${lastName}",
     })
 
     return res.status(200).json({
@@ -182,7 +183,6 @@ exports.login = async (req, res) => {
 exports.sendotp = async (req, res) => {
   try {
     const { email } = req.body
-
     // Check if user is already present
     // Find user with provided email
     const checkUserPresent = await User.findOne({ email })
@@ -196,7 +196,6 @@ exports.sendotp = async (req, res) => {
         message: `User is Already Registered`,
       })
     }
-
     var otp = otpGenerator.generate(6, {
       upperCaseAlphabets: false,
       lowerCaseAlphabets: false,

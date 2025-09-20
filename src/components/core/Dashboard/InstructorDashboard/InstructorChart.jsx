@@ -5,8 +5,22 @@ import { Pie } from "react-chartjs-2"
 Chart.register(...registerables)
 
 export default function InstructorChart({ courses }) {
+
   // State to keep track of the currently selected chart
   const [currChart, setCurrChart] = useState("students")
+
+  if (!courses || courses.length === 0) {
+    return (
+      <div className="flex-1 rounded-md bg-richblack-800 p-6">
+        <p className="text-lg font-bold text-richblack-5">Visualize</p>
+        <p className="mt-4 text-xl font-medium text-richblack-50">
+          Not Enough Data To Visualize
+        </p>
+      </div>
+    )
+  }
+
+  
 
   // Function to generate random colors for the chart
   const generateRandomColors = (numColors) => {

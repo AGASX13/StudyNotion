@@ -1,6 +1,10 @@
 const express = require("express");
 const app = express();
 
+// In server/index.js
+const helmet = require("helmet");
+app.use(helmet());
+
 const userRoutes = require("./routes/User");
 const profileRoutes = require("./routes/Profile");
 const paymentRoutes = require("./routes/Payments");
@@ -30,7 +34,7 @@ app.use(
 
 app.use(
 	fileUpload({
-		useTempFiles:true,
+		useTempFiles:true,	
 		tempFileDir:"/tmp",
 	})
 )

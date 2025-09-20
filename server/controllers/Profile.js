@@ -28,7 +28,7 @@ exports.updateProfile = async (req, res) => {
       firstName,
       lastName,
     })
-    await user.save()
+    // await user.save()
 
     // Update the profile fields
     profile.dateOfBirth = dateOfBirth
@@ -76,7 +76,7 @@ exports.deleteAccount = async (req, res) => {
     for (const courseId of user.courses) {
       await Course.findByIdAndUpdate(
         courseId,
-        { $pull: { studentsEnroled: id } },
+        { $pull: { studentsEnrolled: id } },
         { new: true }
       )
     }
@@ -179,7 +179,7 @@ exports.getEnrolledCourses = async (req, res) => {
         courseID: userDetails.courses[i]._id,
         userId: userId,
       })
-      courseProgressCount = courseProgressCount?.completedVideos.length
+      courseProgressCount = courseProgressCount?.completedVideos.length || 0
       if (SubsectionLength === 0) {
         userDetails.courses[i].progressPercentage = 100
       } else {
@@ -215,13 +215,13 @@ exports.instructorDashboard = async (req, res) => {
     const courseDetails = await Course.find({ instructor: req.user.id })
 
     const courseData = courseDetails.map((course) => {
-      const totalStudentsEnrolled = course.studentsEnroled.length
+      const totalStudentsEnrolled = course.studentsEnrolled?.length || 0
       const totalAmountGenerated = totalStudentsEnrolled * course.price
 
       // Create a new object with the additional fields
       const courseDataWithStats = {
         _id: course._id,
-        courseName: course.courseName,
+        courseName: course.courseName,  
         courseDescription: course.courseDescription,
         // Include other course properties as needed
         totalStudentsEnrolled,
