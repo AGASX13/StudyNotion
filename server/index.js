@@ -50,6 +50,35 @@ app.use("/api/v1/reach", contactUsRoute);
 
 //def route
 
+// TEMPORARY EMAIL TEST ROUTE
+const mailSender = require("./utils/mailSender"); // Make sure the path to your mailSender is correct
+
+app.get("/test-email", async (req, res) => {
+    try {
+        console.log("--- TRIGGERING EMAIL TEST ---");
+        
+        const info = await mailSender(
+            "sj428293@gmail.com",  // <-- IMPORTANT: CHANGE THIS to your own personal email
+            "StudyNotion Test Email",
+            "<h1>This is a test email.</h1><p>If you see this, your Render environment variables and mailSender are working correctly.</p>"
+        );
+        
+        console.log("--- EMAIL TEST SUCCEEDED ---", info);
+        return res.status(200).json({
+            success: true,
+            message: "Test email sent successfully!",
+        });
+
+    } catch (error) {
+        console.error("--- EMAIL TEST FAILED ---", error);
+        return res.status(500).json({
+            success: false,
+            message: "The email test failed.",
+            error: error.message,
+        });
+    }
+});
+
 app.get("/", (req, res) => {
 	return res.json({
 		success:true,
