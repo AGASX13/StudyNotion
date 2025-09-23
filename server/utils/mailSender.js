@@ -37,14 +37,14 @@ const mailSender = async (email, title, body) => {
 
     try {
         await resend.emails.send({
-            from: 'onboarding@resend.dev', // This is Resend's default email for free tier, it works out of the box!
+            from: 'studynotion32@gmail.com', // This is Resend's default email for free tier, it works out of the box!
             to: email, // Recipient's email address
             subject: title,
             html: body,
         });
         console.log(`Email sent successfully to ${email} via Resend`);
         return true; // Return true on success
-
+        
     } catch (error) {
         console.error('Error sending email via Resend');
         console.error(error);

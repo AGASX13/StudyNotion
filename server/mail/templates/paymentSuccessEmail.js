@@ -9,7 +9,7 @@ exports.paymentSuccessEmail = (name, amount, orderId, paymentId) => {
               body {
                   background-color: #ffffff;
                   font-family: Arial, sans-serif;
-                  font-size: 16px;
+                  font-size: 16px; 
                   line-height: 1.4;
                   color: #333333;
                   margin: 0;
